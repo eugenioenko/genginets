@@ -1,7 +1,6 @@
-/* exported Engine */
-
-import { Component } from "./components";
-import { Params } from "./objects";
+import { Component } from './components';
+import { IParams } from './objects';
+import { Debug } from './debug';
 
 /**
  * Engine is the main object of the game engine.
@@ -13,120 +12,133 @@ import { Params } from "./objects";
  */
 export class Engine extends Component {
 
-	constructor(params: Params) {
-        super(params, null);
+    public x: number;
+    public y: number;
+    public components: Map<string, Component>;
+
+    public params(): string[] {
+        return ['canvas', 'width', 'height'];
+    }
+
+    constructor(params: IParams) {
+        super(params);
         this.engine = this;
-		this.x = 0;
-		this.y = 0;
-		this.component = {};
-		this.components = [];
-		this.objects = {};
-		this.utils = new Utils();
-		this.gameLoop = this.loop.bind(this);
-	}
+        this.x = 0;
+        this.y = 0;
+        this.components = new Map();
+        // this.utils = new Utils();
+    }
 
-	params() {
-		return ["canvas", "width", "height"];
-	}
+    public update = () =>  {
+        this.move();
+        this.draw();
+        this.debugInfo();
+        window.requestAnimationFrame(this.update);
+    }
 
-	init() {
-		Debug.group('Engine loaded components');
-		this.addComponent("Resources", Resources);
-		this.addComponent("Camera", Camera, {
-			x: 0,
-			y: 0,
-			width: this.width,
-			height: this.height
-		});
-		this.addComponent("Input", Input);
-		this.addComponent("Time", Time);
-		this.addComponent("Sound", Sound);
-		this.addComponent("Display", CanvasDisplay, {
-			id: 'canvas',
-			x: 0,
-			y: 0,
-			width: this.width,
-			height: this.height
-		});
-		this.addComponent("Stage", Stage);
-		this.addComponent("Events", Events);
-		Debug.groupEnd();
-		this.time = this.component.Time;
-		this.display = this.component.Display;
-		this.stage = this.component.Stage;
-		this.resources = this.component.Resources;
-		this.sound = this.component.Sound;
-		this.input = this.component.Input;
-	}
-	/**
-	 * Static function to replace the windows.onload method.
-	 * Once the window is ready, engine will initialize its components, execute
-	 * the preloader and when preloader loaded all the resources, create the game
-	 * and execute the gameloop.
-	 */
-	static create(params) {
-		Debug.validateParams('Engine.create', params, ["canvas", "width", "height", "preload", "game"]);
-		(function() {
-			let engine = new Engine({
-				canvas: params.canvas,
-				width: params.width,
-				height: params.height
-			});
-			window.addEventListener('load', function() {
-				engine.init();
-				params.preload(engine);
-				engine.resources.preload(params.game); // important: preload on complete calls game function
-				engine.gameLoop();
-			});
-		})();
-	}
+    public init(): void {
+        super.init();
+        this.update();
+    }
 
-	addComponent(name, Component, params = {}) {
-		if (Debug.active()) {
-			if (typeof this.component[name] !== "undefined") {
-				Debug.error(`Component ${name} is already defined`);
-			}
-		}
-		params.name = name;
-		this.component[name] = new Component(params, this);
-		this.component[name].init();
-		this.components.push(this.component[name]);
-	}
+    /*
+    public init() {
+        Debug.group('Engine loaded components');
+        this.addComponent("Resources", Resources);
+        this.addComponent("Camera", Camera, {
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height
+        });
+        this.addComponent("Input", Input);
+        this.addComponent("Time", Time);
+        this.addComponent("Sound", Sound);
+        this.addComponent("Display", CanvasDisplay, {
+            id: 'canvas',
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height
+        });
+        this.addComponent("Stage", Stage);
+        this.addComponent("Events", Events);
+        Debug.groupEnd();
+        this.time = this.component.Time;
+        this.display = this.component.Display;
+        this.stage = this.component.Stage;
+        this.resources = this.component.Resources;
+        this.sound = this.component.Sound;
+        this.input = this.component.Input;
+    }
+    */
+    /**
+     * Static function to replace the windows.onload method.
+     * Once the window is ready, engine will initialize its components, execute
+     * the preloader and when preloader loaded all the resources, create the game
+     * and execute the gameloop.
+     */
 
-	getComponent(name) {
-		if (Debug.active()) {
-			if (typeof this.component[name] === "undefined") {
-				Debug.error(`Component ${name} is not registred`);
-			}
-		}
-		return this.component[name];
-	}
+     /*
+    static create(params) {
+        Debug.validateParams('Engine.create', params, ["canvas", "width", "height", "preload", "game"]);
+        (function() {
+            let engine = new Engine({
+                canvas: params.canvas,
+                width: params.width,
+                height: params.height
+            });
+            window.addEventListener('load', function() {
+                engine.init();
+                params.preload(engine);
+                engine.resources.preload(params.game); // important: preload on complete calls game function
+                engine.gameLoop();
+            });
+        })();
+    }*/
 
-	move() {
-		for (let component of this.components) {
-			component.move();
-		}
-	}
+    public add(name: string, component: typeof Component, params: IParams = {}): void {
+        if (Debug.active()) {
+            if (this.components.has(name)) {
+                Debug.error(`Component ${name} is already defined`);
+            }
+        }
+        params.name = name;
+        params.engine = this;
+        const instance = new component(params);
+        this.components.set(name, instance);
+        instance.init();
+    }
 
-	draw() {
-		this.display.clear();
-		for (let component of this.components) {
-			component.draw();
-		}
-	}
+    public get(name: string): Component {
+        if (Debug.active()) {
+            if (!this.components.has(name)) {
+                Debug.error(`Component ${name} is not registred`);
+            }
+        }
+        return this.components.get(name);
+    }
 
-	loop() {
-		this.move();
-		this.fpsDelayCount = 0;
-		this.draw();
-		this.debugInfo();
-		window.requestAnimationFrame(this.gameLoop);
-	}
+    public move(): void {
+        console.log('move');
+        for (const component of this.components) {
+            component[1].move();
+        }
+    }
 
-	debugInfo() {
-		if (!Debug.active()) return;
-		this.display.fillText((this.time.time).toFixed(2), 20, 20);
-		this.display.fillText((this.time.deltaTime).toFixed(4), 20, 40);
-		this.display.fillText(this.time.fps.toFixed(2), 20, 60);
-	}
+    public draw(): void {
+        /*this.display.clear();
+        for (let component of this.components) {
+            component.draw();
+        }*/
+    }
+
+    public debugInfo(): void {
+        if (!Debug.active()) {
+            return;
+        }
+        /* this.display.fillText((this.time.time).toFixed(2), 20, 20);
+        this.display.fillText((this.time.deltaTime).toFixed(4), 20, 40);
+        this.display.fillText(this.time.fps.toFixed(2), 20, 60);*/
+    }
 }

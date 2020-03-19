@@ -10,43 +10,47 @@
  */
 export class Debug {
 
-	static active(): boolean {
+	public static active(): boolean {
 		return window['GENGINE_DEBUG_MODE'];
 	}
 
-	static log(message: string): void {
-		if (!Debug.active()) return;
+	public static log(message: string): void {
+		if (!Debug.active()) { return; }
 		console.trace();
 		console.log(message);
 	}
 
-	static info(message: string): void {
-		if (!Debug.active()) return;
+	public static info(message: string): void {
+		if (!Debug.active()) { return; }
 		console.info(`%c${message}`, 'color: blue');
 	}
-	static success(message: string): void {
-		if (!Debug.active()) return;
+	public static success(message: string): void {
+		if (!Debug.active()) { return; }
 		console.info(`%c${message}`, 'color: green');
 	}
 
-	static warn(message: string): void {
-		if (!Debug.active()) return;
+	public static warn(message: string): void {
+		if (!Debug.active()) { return; }
 		console.warn(message);
 	}
 
-	static error(message: string): void {
-		if (!Debug.active()) return;
+	public static error(message: string): void {
+		if (!Debug.active()) { return; }
 		console.groupEnd();
-		throw new Error(message);
+		if (window['GENGINE_DEBUG_THROW']) {
+			throw new Error(message);
+		} else {
+			console.error(message);
+		}
 	}
 
-	static group(name: string): void {
-		if (!Debug.active()) return;
+	public static group(name: string): void {
+		if (!Debug.active()) { return; }
 		console.groupCollapsed(name);
 	}
 
-	static groupEnd() {
-		if (!Debug.active()) return;
+	public static groupEnd() {
+		if (!Debug.active()) { return; }
 		console.groupEnd();
 	}
 
@@ -56,13 +60,13 @@ export class Debug {
 	 * @param  {object} params   The constructor argument
 	 * @param  {array} required The list of required keys
 	 */
-	static validateParams(name: string, params: any, required: any): void {
-		if (!Debug.active()) return;
-		if (!required || !required.length) return;
-		if (required.length && !params){
+	public static validateParams(name: string, params: any, required: any): void {
+		if (!Debug.active()) { return; }
+		if (!required || !required.length) { return; }
+		if (required.length && !params) {
 			Debug.warn(`${name} requires this members in the constructor: {${required.join(',')}}`);
 		}
-		for (let key of required) {
+		for (const key of required) {
 			if (typeof params[key] === "undefined") {
 				Debug.error(`${name} requires of "${key}" in the constructor`);
 			}

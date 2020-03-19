@@ -15,6 +15,10 @@
         "trailing-comma": false,
         "max-line-length": false,
         "max-classes-per-file": false,
+        "indent": false,
+        "no-empty": false,
+        "no-string-literal": false,
+        "object-literal-sort-keys": false,
         "interface-name": [
             true,
             "never"

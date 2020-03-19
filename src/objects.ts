@@ -1,19 +1,19 @@
 import { Debug } from './debug';
 
-export interface Params {
-    [name: string]: any
+export interface IParams {
+    [name: string]: any;
 }
 
 export interface IConstructable {
     /**
-    * The params is used as validation of the arguments pased in the constructor.
-    * Params should return an array with the string names of all the keys which should be
-    * present during the construction of an gameObject. This will only happen if the debug
-    * mode is activated.
+     * The params is used as validation of the arguments pased in the constructor.
+     * Params should return an array with the string names of all the keys which should be
+     * present during the construction of an gameObject. This will only happen if the debug
+     * mode is activated.
      */
-    params: () => string[];
-    config: () => Params;
-    init: () => void;
+    params(): string[];
+    config(): IParams;
+    init(): void;
 }
 
 /**
@@ -27,18 +27,21 @@ export interface IConstructable {
  */
 export class Entity implements IConstructable {
 
-    public params = () => ([]);
+    public params(): string[] {
+        return [];
+    }
     public config = () => ({});
     public init(): void { }
 
-	constructor(params: Params) {
-		Debug.validateParams(this.constructor.name, params, this.params());
-		Object.assign(this, params);
-		const config = this.config();
-		for (let key in config) {
-			if (typeof this[key] === "undefined") {
-				this[key] = config[key];
-			}
-		}
-	}
+    constructor(params: IParams) {
+        Debug.validateParams(this.constructor.name, params, this.params());
+        console.log(this.params());
+        Object.assign(this, params);
+        const config = this.config();
+        for (const key in config) {
+            if (typeof this[key] === "undefined") {
+                this[key] = config[key];
+            }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 /* exported Component */
 
-import { Params, Entity } from "./objects";
+import { IParams, Entity } from "./objects";
 import { Engine } from "./engine";
 import { Debug } from "./debug";
 
@@ -18,29 +18,30 @@ import { Debug } from "./debug";
  */
 export class Component extends Entity {
     public engine: Engine;
-    private name: string;
+	private name: string;
+	public params(): string[] {
+		return ['name', 'engine'];
+	}
 
-	constructor(params: Params, engine: Engine) {
+	constructor(params: IParams) {
 		super(params);
-		this.engine = engine;
-		this.name = params.name;
 	}
 
 	/**
 	 * Method called when the component has been added to the engine and is ready
 	 */
-	init() {
+	public init(): void {
 		Debug.success(`${this.name} initialized`);
 	}
 
 	/**
 	 * Method called each cycle of the engine game loop
 	 */
-	move() { }
+	public move(): void { }
 
 	/**
 	 * Method called each cycle of the engine game loop
 	 */
-	draw() { }
+	public draw(): void { }
 
 }
