@@ -10,37 +10,37 @@
  */
 export class Debug {
 
-	static active() {
-		return window.GENGINE_DEBUG_MODE;
+	static active(): boolean {
+		return window['GENGINE_DEBUG_MODE'];
 	}
 
-	static log(message) {
+	static log(message: string): void {
 		if (!Debug.active()) return;
 		console.trace();
 		console.log(message);
 	}
 
-	static info(message) {
+	static info(message: string): void {
 		if (!Debug.active()) return;
 		console.info(`%c${message}`, 'color: blue');
 	}
-	static success(message) {
+	static success(message: string): void {
 		if (!Debug.active()) return;
 		console.info(`%c${message}`, 'color: green');
 	}
 
-	static warn(message) {
+	static warn(message: string): void {
 		if (!Debug.active()) return;
 		console.warn(message);
 	}
 
-	static error(message) {
+	static error(message: string): void {
 		if (!Debug.active()) return;
 		console.groupEnd();
 		throw new Error(message);
 	}
 
-	static group(name) {
+	static group(name: string): void {
 		if (!Debug.active()) return;
 		console.groupCollapsed(name);
 	}
@@ -56,7 +56,7 @@ export class Debug {
 	 * @param  {object} params   The constructor argument
 	 * @param  {array} required The list of required keys
 	 */
-	static validateParams(name, params, required) {
+	static validateParams(name: string, params: any, required: any): void {
 		if (!Debug.active()) return;
 		if (!required || !required.length) return;
 		if (required.length && !params){
