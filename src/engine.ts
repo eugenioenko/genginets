@@ -1,6 +1,7 @@
 import { Component } from './components';
-import { IParams } from './objects';
+import { Params } from './objects';
 import { Debug } from './debug';
+import { Resources, Resource } from './resources';
 
 /**
  * Engine is the main object of the game engine.
@@ -20,12 +21,14 @@ export class Engine extends Component {
         return ['canvas', 'width', 'height'];
     }
 
-    constructor(params: IParams) {
+    constructor(params: Params, resources: Resource[] = []) {
         super(params);
         this.engine = this;
         this.x = 0;
         this.y = 0;
         this.components = new Map();
+        this.add('resources', Resources, { resources: resources });
+        this.init();
         // this.utils = new Utils();
     }
 
@@ -36,9 +39,22 @@ export class Engine extends Component {
         window.requestAnimationFrame(this.update);
     }
 
+    public preload(): void {
+        Debug.group('Preloading Resources');
+        const loaders = (this.get('resources') as Resources).loaders();
+        Promise.all(loaders)
+            .then(data => {
+                console.info(data);
+            }, () => {
+                Debug.error('Error loading resources')
+            });
+        Debug.groupEnd();
+    }
+
     public init(): void {
+        this.preload();
         super.init();
-        this.update();
+        // this.update();
     }
 
     /*
@@ -97,7 +113,7 @@ export class Engine extends Component {
         })();
     }*/
 
-    public add(name: string, component: typeof Component, params: IParams = {}): void {
+    public add(name: string, component: typeof Component, params: Params = {}): void {
         if (Debug.active()) {
             if (this.components.has(name)) {
                 Debug.error(`Component ${name} is already defined`);

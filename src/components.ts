@@ -1,6 +1,6 @@
 /* exported Component */
 
-import { IParams, Entity } from "./objects";
+import { Params, Entity } from "./objects";
 import { Engine } from "./engine";
 import { Debug } from "./debug";
 
@@ -23,7 +23,7 @@ export class Component extends Entity {
 		return ['name', 'engine'];
 	}
 
-	constructor(params: IParams) {
+	constructor(params: Params) {
 		super(params);
 	}
 

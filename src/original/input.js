@@ -14,7 +14,8 @@ class Input extends Component {
 	init() {
 		this.camera = this.getComponent("Camera");
 		super.init();
-	}
+    }
+
 	params() {
 		return [];
 	}
@@ -65,5 +66,6 @@ class Input extends Component {
 		let result = this.keyCode("ArrowUp") ? -1 : 0;
 		result += this.keyCode("ArrowDown") ? 1 : 0;
 		return result;
-	}
+    }
+
 }
