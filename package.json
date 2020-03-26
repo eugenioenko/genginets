@@ -4,7 +4,8 @@
   "description": "A micro game engine",
   "main": "index.js",
   "scripts": {
-    "start": "npx webpack",
+    "start": "webpack-dev-server --open",
+    "pack": "npx webpack",
     "build": "webpack --config webpack.prod.js",
     "lint": "npx tslint -c tslint.json 'src/*.ts'"
   },
@@ -19,6 +20,7 @@
     "tslint": "^5.12.1",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.5",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }

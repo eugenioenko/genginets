@@ -16,7 +16,6 @@ export class Debug {
 
 	public static log(message: string): void {
 		if (!Debug.active()) { return; }
-		console.trace();
 		console.log(message);
 	}
 

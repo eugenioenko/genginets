@@ -28,8 +28,26 @@ export class Engine extends Component {
         this.y = 0;
         this.components = new Map();
         this.add('resources', Resources, { resources: resources });
-        this.init();
-        // this.utils = new Utils();
+        this.preload();
+    }
+
+    public preload(): void {
+        Debug.group('preloading resources');
+        const loaders = (this.get('resources') as Resources).loaders();
+        Promise.all(loaders)
+            .then(() => {
+                Debug.groupEnd();
+                this.init();
+            }, (data) => {
+                Debug.error('Error loading resources')
+                Debug.groupEnd();
+            });
+
+    }
+
+    public init(): void {
+        super.init();
+        // this.update();
     }
 
     public update = () =>  {
@@ -37,24 +55,6 @@ export class Engine extends Component {
         this.draw();
         this.debugInfo();
         window.requestAnimationFrame(this.update);
-    }
-
-    public preload(): void {
-        Debug.group('Preloading Resources');
-        const loaders = (this.get('resources') as Resources).loaders();
-        Promise.all(loaders)
-            .then(data => {
-                console.info(data);
-            }, () => {
-                Debug.error('Error loading resources')
-            });
-        Debug.groupEnd();
-    }
-
-    public init(): void {
-        this.preload();
-        super.init();
-        // this.update();
     }
 
     /*

@@ -18,7 +18,7 @@ class ResourceItem {
     public url: string;
     public type: string;
     public name: string;
-    public loader: Promise<number>;
+    public loader: Promise<string>;
 
 	constructor(params: Resource) {
 		Debug.validateParams('Resources.add', params, ["url", "type", "name"]);
@@ -33,16 +33,14 @@ class ResourceItem {
                     this.buffer  = request.response;
                     this.item = new Image();
                     this.item.src = window.URL.createObjectURL(request.response);
-                    Debug.info(`Success loading ${this.name}`);
-                    resolve(1);
+                    Debug.log(`${this.name}: ${this.url}`);
+                    resolve(this.name);
                 } else {
-                    Debug.error(`Error loading ${this.name}`);
-                    reject(0);
+                    reject(this.url);
                 }
             };
             request.onerror = () => {
-                Debug.error(`Error loading ${this.name}`);
-                reject(0);
+                reject(this.url);
             };
             request.open('GET', this.url, true);
             request.send();
@@ -84,7 +82,7 @@ export class Resources extends Component {
 		return this.items[name].item;
     }
 
-    public loaders(): Promise<number>[] {
+    public loaders(): Promise<string>[] {
         return Array.from(this.items.values()).map(item => item.loader)
     }
 	public remove(name: string) {

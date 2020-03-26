@@ -2,8 +2,11 @@ const path = require('path');
 
 module.exports = {
     entry: './src/gentinets.ts',
-    devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
     mode: 'development',
+    devServer: {
+        contentBase: './dist',
+    },
     watch: true,
     module: {
         rules: [

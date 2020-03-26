@@ -23,6 +23,10 @@ const resources = [
         name: 'sprite2',
         type: 'image',
         url: './resources/test2.png'
+    },  {
+        name: 'sprite3',
+        type: 'image',
+        url: './resources/test2.png'
     }
 ];
 const engine = new Engine({
