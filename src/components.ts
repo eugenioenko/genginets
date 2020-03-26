@@ -18,7 +18,12 @@ import { Debug } from "./debug";
  */
 export class Component extends Entity {
     public engine: Engine;
-	private name: string;
+    private name: string;
+    public x: number;
+    public y: number;
+    public width: number;
+    public height: number;
+
 	public params(): string[] {
 		return ['name', 'engine'];
 	}

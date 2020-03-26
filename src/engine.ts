@@ -3,6 +3,8 @@ import { Params } from './objects';
 import { Debug } from './debug';
 import { Resources, Resource } from './resources';
 import { Time } from './time';
+import { Camera } from './camera';
+import { CanvasDisplay } from './display';
 
 /**
  * Engine is the main object of the game engine.
@@ -14,12 +16,13 @@ import { Time } from './time';
  */
 export class Engine extends Component {
 
-    public x: number;
-    public y: number;
     public components: Map<string, Component>;
     public resources: Resources;
+    public camera: Camera;
+    public display: CanvasDisplay;
     public time: Time;
     public count = 0;
+    public canvas: string;
 
     public params(): string[] {
         return ['canvas', 'width', 'height'];
@@ -32,7 +35,9 @@ export class Engine extends Component {
         this.y = 0;
         this.components = new Map();
         this.resources = this.add('resources', Resources, { resources: resources });
-        this.preload();
+        window.addEventListener('DOMContentLoaded', () => {
+            this.preload();
+        });
     }
 
     public preload(): void {
@@ -51,6 +56,7 @@ export class Engine extends Component {
 
     public init(): void {
         this.time = this.add('time', Time);
+        this.display = this.add('display', CanvasDisplay, {id: this.canvas });
         super.init();
         this.update();
     }
