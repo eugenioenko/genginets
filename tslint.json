@@ -19,10 +19,8 @@
         "no-empty": false,
         "no-string-literal": false,
         "object-literal-sort-keys": false,
-        "interface-name": [
-            true,
-            "never"
-        ],
+        "object-literal-shorthand": false,
+        "interface-name": false,
         "object-shorthand": [
             "never"
         ]

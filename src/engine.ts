@@ -25,8 +25,20 @@ export class Engine extends Component {
     public canvas: string;
 
     public params(): string[] {
-        return ['canvas', 'width', 'height'];
+        return [];
     }
+
+    public config(): object {
+		return {
+			x: 0,
+			y: 0,
+			width: 320,
+            height:  240,
+            canvas: 'canvas',
+            name: 'engine'
+
+		};
+	}
 
     constructor(params: Params, resources: Resource[] = []) {
         super(params);
@@ -34,8 +46,10 @@ export class Engine extends Component {
         this.x = 0;
         this.y = 0;
         this.components = new Map();
+        Debug.success('initializing Gengine');
         this.resources = this.add('resources', Resources, { resources: resources });
         window.addEventListener('DOMContentLoaded', () => {
+            Debug.success('dom content loaded');
             this.preload();
         });
     }
@@ -58,6 +72,7 @@ export class Engine extends Component {
         this.time = this.add('time', Time);
         this.display = this.add('display', CanvasDisplay, {id: this.canvas });
         super.init();
+        console.log(this);
         this.update();
     }
 

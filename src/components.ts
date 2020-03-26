@@ -1,6 +1,6 @@
 /* exported Component */
 
-import { Params, Entity } from "./objects";
+import { Params, Entity, Rect } from "./objects";
 import { Engine } from "./engine";
 import { Debug } from "./debug";
 
@@ -16,7 +16,7 @@ import { Debug } from "./debug";
  * @param {object} params Object literal with parameters passed to the component constructed
  * @param {object} engine The instance of the engine, this will be passed by the engine
  */
-export class Component extends Entity {
+export class Component extends Entity implements Rect {
     public engine: Engine;
     private name: string;
     public x: number;
@@ -24,29 +24,38 @@ export class Component extends Entity {
     public width: number;
     public height: number;
 
-	public params(): string[] {
-		return ['name', 'engine'];
-	}
+    public params(): string[] {
+        return ['name', 'engine'];
+    }
 
-	constructor(params: Params) {
-		super(params);
-	}
+    public config(): object {
+        return {
+            x: 0,
+            y: 0,
+            width: this.engine.width,
+            height:  this.engine.height
+        };
+    }
 
-	/**
-	 * Method called when the component has been added to the engine and is ready
-	 */
-	public init(): void {
-		Debug.success(`${this.name} initialized`);
-	}
+    constructor(params: Params) {
+        super(params);
+    }
 
-	/**
-	 * Method called each cycle of the engine game loop
-	 */
-	public move(): void { }
+    /**
+     * Method called when the component has been added to the engine and is ready
+     */
+    public init(): void {
+        Debug.success(`${this.name} initialized`);
+    }
 
-	/**
-	 * Method called each cycle of the engine game loop
-	 */
-	public draw(): void { }
+    /**
+     * Method called each cycle of the engine game loop
+     */
+    public move(): void { }
+
+    /**
+     * Method called each cycle of the engine game loop
+     */
+    public draw(): void { }
 
 }

@@ -4,6 +4,13 @@ export interface Params {
     [name: string]: any;
 }
 
+export interface Rect {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+}
+
 /**
  * Base Object of mostly all the classes of the engine.
  * It creates a structure so that when instances of objects are created,
@@ -33,7 +40,7 @@ export class Entity {
         Object.assign(this, params);
         const config = this.config();
         for (const key in config) {
-            if (typeof this[key] === "undefined") {
+            if (typeof this[key] === 'undefined') {
                 this[key] = config[key];
             }
         }
