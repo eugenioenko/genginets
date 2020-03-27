@@ -30,6 +30,7 @@ const resources = [
     }
 ];
 const engine = new Engine({
-    name: 'engine',
-    canvas: 'canvas'
+    canvas: 'canvas',
+    width: 640,
+    height: 480
 }, resources);
